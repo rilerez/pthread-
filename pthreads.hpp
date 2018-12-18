@@ -126,6 +126,6 @@ namespace pthreads{
     //https://stackoverflow.com/questions/17402657/how-to-convert-stdchronosystem-clockduration-into-struct-timeval
 
 
-    ~cond(){pthread_cond_destroy(&_cond);}
+    ~cond(){pthread_cond_destroy(&mycond);}
   };
 }
