@@ -13,14 +13,14 @@ namespace pthreads{
 
   struct pthread_error {
     const int erno;
-    pthread_error(int erno): erno(erno) {}
+    constexpr pthread_error(const int erno) noexcept: erno(erno) {}
   };
 
   void throw_if(int error_code){
     if (error_code!=0) throw pthread_error(error_code);
   }
 
-  template<typename F,typename ret_t>
+  template<class F,class ret_t>
   struct thread_helper_base{
     // a function we can take a pointer to that calls its argument
     // this way we can pass closures to PTHREAD_CREATE
@@ -40,7 +40,7 @@ namespace pthreads{
     }
   };
 
-  template<typename F>
+  template<class F>
   struct thread_helper_base<F,void>{
     static auto call_closure(void* _f){
       auto f =((F*)_f);
@@ -53,28 +53,28 @@ namespace pthreads{
     }
   };
 
-  template<typename F>
+  template<class F>
   struct thread_helper
     : thread_helper_base<F,typename result_of<F()>::type>
   {};
 
 
-  template<typename F>
+  template<class F>
   struct thread{
     F myf;
     pthread_t mythread;
 
     thread(F&& f, const pthread_attr_t *attr = nullptr): myf(forward<F>(f)){
-      throw_if(pthread_create(mythread,attr,
+      throw_if(pthread_create(&mythread,attr,
                               &thread_helper<F>::call_closure,
-                              &_f));
+                              &myf));
     }
 
     // do you want to copy threads?
     thread(const F& f, pthread_attr_t*) = delete;
 
     auto join(){return thread_helper<F>::join(mythread);}
-    void kill(int sig){throw_if(pthread_kill(t,sig));}
+    void kill(int sig){throw_if(pthread_kill(mythread,sig));}
     void cancel(){throw_if(pthread_cancel(mythread));}
   };
 
