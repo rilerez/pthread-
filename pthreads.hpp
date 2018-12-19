@@ -1,8 +1,6 @@
 #include <utility>
 #include <chrono>
-#include <unistd.h>
 #include <pthread.h>
-#include <csignal>
 #include <ctime>
 
 namespace pthreads{

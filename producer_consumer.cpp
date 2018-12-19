@@ -1,7 +1,6 @@
 // port of https://www.cs.nmsu.edu/~jcook/Tools/pthreads/pc.c
 
 #include "pthreads.hpp"
-#include <unistd.h>
 #include <cstdio>
 #include <array>
 #include <mutex>
