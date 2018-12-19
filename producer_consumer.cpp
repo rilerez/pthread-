@@ -51,8 +51,8 @@ int main(){
                while(fifo.full){
                  printf("producer: queue full.\n");
                  fifo.not_full.wait(fifo.mut);}
+               fifo.add(i);
              }
-             fifo.add(i);
              fifo.not_empty.signal();
              this_thread::sleep_for(time);}};
        run(0.1s);
@@ -62,13 +62,14 @@ int main(){
     {[&](){
        auto run =
          [&](auto time){
+           int d;
            for(int i=0; i<loop;++i){
              {auto lock = lock_guard{fifo.mut};
                while(fifo.empty){
                  printf("consumer: queue empty.\n");
                  fifo.not_empty.wait(fifo.mut);}
+               d = fifo.del();
              }
-             auto d = fifo.del();
              fifo.not_full.signal();
              printf("consumer: recieved %d.\n", d);
                this_thread::sleep_for(time);}};
