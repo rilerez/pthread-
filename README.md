@@ -1,4 +1,4 @@
-# pthread-
+# pthread++
 I'm just wrapping pthread.h in C++2a for practice
 
 Thread takes a function object in its constructor
